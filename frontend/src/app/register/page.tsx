@@ -3,6 +3,8 @@ import { useState } from "react";
 import { IUserRegister } from "@/src/interfaces/user";
 import { ServiceUser } from "@/src/services/user";
 import { displayMessage } from "@/src/components/displayMessage"
+import { AxiosError } from "axios";
+
 
 export default function RegisterPage() {
     const serviceUser = ServiceUser();
@@ -31,11 +33,19 @@ export default function RegisterPage() {
             )
             setForm({ email: "", password: "", nome: "", cpf: "", telefone: "" });
         } catch (err: unknown) {
+            let message = "Falha ao cadastrar usuário.";
+
+            if (err && typeof err === "object" && "response" in err) {
+                const axiosErr = err as AxiosError;
+                if (axiosErr.response && axiosErr.response.data) {
+                    message = (axiosErr.response.data as any).error || message;
+                }
+            }
+
             displayMessage(
-                "Erro",
-                "Falha ao carregar demandas.",
-                "error", false, false, false, 3000
-            )
+                "Erro", message, "error",
+                false, false, false, 5000
+            );
         }
     };
 
