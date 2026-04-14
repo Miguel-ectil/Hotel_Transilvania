@@ -1,6 +1,18 @@
+import jwt
 from functools import wraps
 from flask import request, jsonify
-from app.database.supabase_client import supabase
+from datetime import datetime, timedelta
+from app.config import SECRET_KEY
+
+def generate_token(user):
+    payload = {
+        "user_id": user["id"],
+        "email": user["email"],
+        "exp": datetime.utcnow() + timedelta(hours=2)
+    }
+
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
 
 def require_auth(f):
     @wraps(f)
@@ -13,9 +25,9 @@ def require_auth(f):
         try:
             token = token.split(" ")[1]
 
-            user = supabase.auth.get_user(token)
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
 
-            request.user = user
+            request.user = decoded
 
         except Exception:
             return jsonify({"error": "Token inválido"}), 401
