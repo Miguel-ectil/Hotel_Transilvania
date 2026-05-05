@@ -11,7 +11,7 @@ O projeto é uma aplicação fullstack construída para fins de estudo e portfó
 - TypeScript
 - TailwindCSS
 
-## Backend:
+### Backend:
 
 - Python
 - Flask
@@ -28,32 +28,96 @@ O projeto é uma aplicação fullstack construída para fins de estudo e portfó
 ## 🛠️ Executando o projeto
 
 ### 1. Clonar o repositório
-```
-  git clone https://github.com/seu-user/hotel-transilvania
-```
-
-### 2. Instalar dependências
-Frontend
-```
-  cd frontend
-  npm instal
+```bash
+git clone https://github.com/seu-user/hotel-transilvania
+cd hotel-transilvania
 ```
 
-Backend
+### 2. Configurar variáveis de ambiente
+
+Crie os arquivos `.env` (eles estão no `.gitignore` e não são versionados).
+
+**`backend/.env`**
+```env
+SUPABASE_URL=https://sua-instancia.supabase.co
+SUPABASE_KEY=sua-supabase-key
+SECRET_KEY=uma-secret-key
 ```
-  python -m venv venv
+
+**`frontend/.env`**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
+
+---
+
+## 🐳 Rodando com Docker (recomendado)
+
+Pré-requisitos: [Docker](https://docs.docker.com/get-docker/) e Docker Compose.
+
+Na raiz do projeto:
+
+```bash
+docker compose up --build
 ```
-  source venv/bin/activate
+
+Para rodar em segundo plano:
+
+```bash
+docker compose up -d --build
 ```
+
+Para parar:
+
+```bash
+docker compose down
 ```
-  pip install -r requirements.txt
+
+Serviços disponíveis:
+- Frontend: http://localhost:3000
+- Backend:  http://localhost:5000
+
+---
+
+## 💻 Rodando localmente (sem Docker)
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
 ```
-### 3. Rodar o projeto
-Na raiz:
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate        # Linux/Mac
+# venv\Scripts\activate         # Windows
+pip install -r requirements.txt
+python run.py
+```
+
+Serviços disponíveis:
+- Frontend: http://localhost:3000
+- Backend:  http://localhost:5000
+
+---
+
+## 📁 Estrutura do projeto
 
 ```
-  npm run dev
+Hotel_Transilvania/
+├── backend/            # API Flask
+│   ├── app/
+│   ├── requirements.txt
+│   ├── run.py
+│   └── Dockerfile
+├── frontend/           # App Next.js
+│   ├── src/
+│   ├── package.json
+│   └── Dockerfile
+└── docker-compose.yml
 ```
-Frontend: http://localhost:3000
-Backend: http://localhost:5000
