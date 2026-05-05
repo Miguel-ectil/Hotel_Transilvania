@@ -1,10 +1,13 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { ServiceUser } from "@/src/services/user";
 import { displayMessage } from "@/src/components/displayMessage";
 
 export default function LoginPage() {
     const serviceUser = ServiceUser();
+    const router = useRouter();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -18,15 +21,17 @@ export default function LoginPage() {
                 password
             });
 
-            // salvar token (IMPORTANTE)
-            localStorage.setItem("token", res.data.token);
+            Cookies.set("token", res.data.token, {
+                expires: 7,
+                sameSite: "lax",
+            });
 
             displayMessage(
                 "Sucesso", "Login realizado com sucesso!", "success",
                 false, false, false, 3000
             );
 
-            console.log("USER:", res.data.user);
+            router.push("/dashboard");
 
         } catch (err: any) {
             displayMessage(
