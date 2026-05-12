@@ -1,33 +1,28 @@
 # 🏨 Hotel Transilvânia
 
-Sistema de reservas de hotel inspirado no universo do filme Hotel Transylvania.
-O projeto é uma aplicação fullstack construída para fins de estudo e portfólio.
+Sistema de gestão hoteleira fullstack — gerenciamento de quartos, hóspedes e reservas com validação de conflitos.
 
-## 🚀 Tecnologias
+## 🚀 Stack
 
-### Frontend:
+**Frontend:** Next.js 16 (App Router) · React 19 · TypeScript · TailwindCSS 4 · Axios · js-cookie · SweetAlert2
 
-- Next.js
-- TypeScript
-- TailwindCSS
+**Backend:** Python 3.12 · Flask 3 · Gunicorn · Supabase (PostgreSQL + Auth) · bcrypt · flask-cors
 
-### Backend:
-
-- Python
-- Flask
-- PostgreSQL / Supabase
+**Infra:** Docker + Compose
 
 ## 📦 Funcionalidades
 
-- Cadastro e login de usuários
-- Listagem de quartos
-- Reserva de quartos
-- Visualização de reservas
-- Painel administrativo simples
+- Autenticação (registro, login, JWT)
+- CRUD de quartos com mudança de status e log de auditoria
+- CRUD de hóspedes
+- Criação e listagem de reservas com validação automática de conflito de datas
+- Cálculo automático de preço total (Strategy pattern)
+- Soft delete de quartos
 
-## 🛠️ Executando o projeto
+## 🛠️ Setup
 
 ### 1. Clonar o repositório
+
 ```bash
 git clone https://github.com/seu-user/hotel-transilvania
 cd hotel-transilvania
@@ -35,89 +30,99 @@ cd hotel-transilvania
 
 ### 2. Configurar variáveis de ambiente
 
-Crie os arquivos `.env` (eles estão no `.gitignore` e não são versionados).
+Copie os templates e preencha com seus valores:
 
-**`backend/.env`**
-```env
-SUPABASE_URL=https://sua-instancia.supabase.co
-SUPABASE_KEY=sua-supabase-key
-SECRET_KEY=uma-secret-key
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-**`frontend/.env`**
+**`backend/.env`** — chave do Supabase deve ser a **secret** (`sb_secret_...`), não a publishable, porque o backend precisa bypassar RLS:
+
+```env
+SUPABASE_URL=https://sua-instancia.supabase.co
+SUPABASE_KEY=sb_secret_xxxxxxxxxx
+SECRET_KEY=qualquer-string-aleatoria
+```
+
+**`frontend/.env`**:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
----
+### 3. Criar as tabelas no Supabase
 
-## 🐳 Rodando com Docker (recomendado)
+No SQL Editor do [Supabase Dashboard](https://app.supabase.com), execute o conteúdo de [supabase/schema.sql](supabase/schema.sql). Cria as 4 tabelas (`rooms`, `guests`, `reservations`, `room_status_log`) com RLS e policies.
 
-Pré-requisitos: [Docker](https://docs.docker.com/get-docker/) e Docker Compose.
-
-Na raiz do projeto:
+### 4. Subir os containers
 
 ```bash
 docker compose up --build
 ```
 
-Para rodar em segundo plano:
+Nas próximas execuções, apenas:
 
 ```bash
-docker compose up -d --build
+docker compose up
 ```
 
-Para parar:
+Aplicação disponível em:
+- Frontend → http://localhost:3000
+- Backend → http://localhost:5000
+
+### Quando precisa rebuildar
+
+Só é necessário `--build` quando mudar:
+- `backend/requirements.txt`
+- `frontend/package.json`
+- Algum `Dockerfile`
+
+Mudanças em código (`.py`, `.tsx`, `.css`) são detectadas automaticamente pelos servidores de dev — sem rebuild.
+
+## 🧰 Modo dev vs produção
+
+O projeto usa o padrão do Docker Compose com dois arquivos:
+
+- [docker-compose.yml](docker-compose.yml) → configuração de **produção** (gunicorn + Next.js standalone)
+- [docker-compose.override.yml](docker-compose.override.yml) → sobreposição de **desenvolvimento** (flask debug + next dev, com hot reload e volumes montados)
+
+O Compose carrega os dois automaticamente. Pra rodar apenas em modo produção:
 
 ```bash
-docker compose down
+docker compose -f docker-compose.yml up --build
 ```
 
-Serviços disponíveis:
-- Frontend: http://localhost:3000
-- Backend:  http://localhost:5000
-
----
-
-## 💻 Rodando localmente (sem Docker)
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Backend
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-# venv\Scripts\activate         # Windows
-pip install -r requirements.txt
-python run.py
-```
-
-Serviços disponíveis:
-- Frontend: http://localhost:3000
-- Backend:  http://localhost:5000
-
----
-
-## 📁 Estrutura do projeto
+## 📁 Estrutura
 
 ```
 Hotel_Transilvania/
-├── backend/            # API Flask
+├── backend/                       # API Flask (MVC + Repository)
 │   ├── app/
-│   ├── requirements.txt
-│   ├── run.py
-│   └── Dockerfile
-├── frontend/           # App Next.js
+│   │   ├── controllers/           # Recebem request, delegam ao service
+│   │   ├── services/              # Regras de negócio
+│   │   ├── repositories/          # Acesso ao Supabase
+│   │   ├── models/                # DTOs (dataclasses)
+│   │   ├── routes/                # Registro de blueprints
+│   │   ├── middlewares/           # @require_auth, @handle_errors
+│   │   ├── utils/                 # generate_token, password hashing
+│   │   └── database/              # Supabase client
+│   ├── Dockerfile
+│   └── requirements.txt
+├── frontend/                      # Next.js
 │   ├── src/
-│   ├── package.json
-│   └── Dockerfile
-└── docker-compose.yml
+│   │   ├── app/                   # App Router (páginas)
+│   │   ├── components/            # UI compartilhada
+│   │   ├── controllers/           # Orquestração de ações
+│   │   ├── services/              # Chamadas HTTP
+│   │   ├── hooks/                 # useRooms, useGuests, etc
+│   │   ├── interfaces/            # Tipos TS
+│   │   ├── context/               # AuthContext
+│   │   └── config/                # Axios + interceptor
+│   ├── Dockerfile
+│   └── package.json
+├── supabase/
+│   └── schema.sql                 # Schema + RLS + policies
+├── docker-compose.yml             # Produção
+└── docker-compose.override.yml    # Dev (hot reload)
 ```
