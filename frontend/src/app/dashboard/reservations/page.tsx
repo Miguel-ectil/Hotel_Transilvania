@@ -66,7 +66,7 @@ export default function ReservationsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-red-950 text-white px-6 py-10">
             <BackButton href="/dashboard" label="Voltar para o Dashboard" />
 
             <div className="flex justify-between items-center mb-2">
@@ -84,7 +84,7 @@ export default function ReservationsPage() {
             </p>
 
             {!showForm && (availableRooms.length === 0 || guests.length === 0) && (
-                <div className="bg-yellow-900/30 border border-yellow-700/50 text-yellow-200 p-4 rounded mb-4 text-sm">
+                <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 p-4 rounded-2xl mb-6 text-sm">
                     Para criar uma reserva é necessário ter pelo menos{" "}
                     <strong>1 quarto disponível</strong> e <strong>1 hóspede cadastrado</strong>.
                     {availableRooms.length === 0 && " Nenhum quarto disponível no momento."}
@@ -95,12 +95,16 @@ export default function ReservationsPage() {
             {showForm && (
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-zinc-900 p-6 rounded-lg mb-6 border border-zinc-800"
+                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 mb-10 shadow-2xl"
                 >
-                    <h2 className="text-xl font-semibold mb-1">Nova reserva</h2>
-                    <p className="text-sm text-zinc-400 mb-4">
-                        Selecione o quarto, hóspede e o período de hospedagem. O preço total é calculado automaticamente.
-                    </p>
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold mb-2">
+                            Nova reserva
+                        </h2>
+                        <p className="text-zinc-400">
+                            Selecione o quarto, hóspede e período de estadia.
+                        </p>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
