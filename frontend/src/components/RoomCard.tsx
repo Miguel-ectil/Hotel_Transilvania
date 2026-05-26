@@ -17,17 +17,71 @@ export default function RoomCard({ room, onClick }: Props) {
     return (
         <button
             onClick={() => onClick?.(room)}
-            className="bg-zinc-900 hover:bg-zinc-800 text-left p-4 rounded-lg border border-zinc-800 transition-colors"
+            className="
+                group
+                w-full
+                text-left
+                rounded-2xl
+                border
+                border-white/10
+                bg-white/5
+                backdrop-blur-md
+                p-5
+                transition-all
+                duration-300
+                hover:-translate-y-1
+                hover:bg-white/10
+                hover:border-red-500/30
+                hover:shadow-2xl
+                hover:shadow-red-900/20
+                active:scale-[0.99]
+            "
         >
-            <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-bold text-white">Quarto {room.number}</h3>
+            {/* HEADER */}
+            <div className="flex justify-between items-start mb-3">
+                <div>
+                    <h3 className="text-lg font-bold text-white group-hover:text-red-400 transition">
+                        Quarto {room.number}
+                    </h3>
+
+                    <p className="text-xs text-zinc-400 mt-1">
+                        {TYPE_LABELS[room.type] ?? room.type}
+                    </p>
+                </div>
+
                 <StatusBadge status={room.status} />
             </div>
-            <p className="text-sm text-zinc-400">{TYPE_LABELS[room.type] ?? room.type}</p>
-            <p className="text-sm text-zinc-400">Capacidade: {room.capacity}</p>
-            <p className="text-base text-zinc-200 mt-2 font-semibold">
-                R$ {room.price_per_night.toFixed(2)} / noite
-            </p>
+
+            {/* INFO */}
+            <div className="space-y-1 text-sm text-zinc-400">
+                <p>
+                    <span className="text-zinc-500">Capacidade:</span>{" "}
+                    {room.capacity} pessoas
+                </p>
+
+                {room.floor !== undefined && (
+                    <p>
+                        <span className="text-zinc-500">Andar:</span>{" "}
+                        {room.floor}
+                    </p>
+                )}
+            </div>
+
+            {/* PRICE */}
+            <div className="mt-4 pt-3 border-t border-white/10">
+                <p className="text-base font-semibold text-white">
+                    <span className="text-red-400">R$</span>{" "}
+                    {room.price_per_night.toFixed(2)}
+                    <span className="text-zinc-400 text-sm font-normal">
+                        {" "} / noite
+                    </span>
+                </p>
+            </div>
+
+            {/* HOVER HINT */}
+            <div className="mt-3 text-xs text-red-400 opacity-0 group-hover:opacity-100 transition">
+                Clique para editar →
+            </div>
         </button>
     );
 }
