@@ -50,96 +50,254 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-red-950 px-4 py-10 overflow-hidden">
+            {/* Glow */}
+            <div className="absolute w-[200px] h-[600px] bg-red-600/20 blur-3xl rounded-full" />
+
             <form
                 onSubmit={handleSubmit}
-                className="bg-black/70 p-8 rounded-xl w-full max-w-xl text-white backdrop-blur-sm"
+                className="
+            relative
+            w-full
+            max-w-xl
+            bg-white/5
+            backdrop-blur-xl
+            border
+            border-white/10
+            rounded-3xl
+            p-8
+            md:p-10
+            shadow-2xl
+        "
             >
-                <h1 className="text-3xl font-bold mb-6 text-red-600 text-center">
-                    Bem vindo ao Hotel Transilvânia
-                    <span className="block text-orange-200 text-lg mt-1 font-medium">
+                {/* HEADER */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-black text-white leading-tight">
                         Cadastro de Usuário
-                    </span>
-                </h1>
+                    </h1>
+                </div>
 
-                <input
-                    type="text"
-                    name="nome"
-                    placeholder="Nome"
-                    value={form.nome}
-                    onChange={handleChange}
-                    className="w-full p-3 mb-4 rounded bg-gray-800 placeholder-gray-400 text-white focus:ring-2 focus:ring-red-600 focus:outline-none transition rounded-md"
-                    required
-                />
+                {/* NOME */}
+                <div className="mb-2">
+                    <label className="block text-sm text-gray-300 mb-1">
+                        Nome
+                    </label>
 
-                <div className="grid grid-cols-2 gap-2">
                     <input
                         type="text"
-                        name="cpf"
-                        placeholder="CPF"
-                        value={form.cpf}
+                        name="nome"
+                        placeholder="Digite seu nome"
+                        value={form.nome}
                         onChange={handleChange}
-                        className="w-full p-3 mb-4 rounded bg-gray-800 placeholder-gray-400 text-white focus:ring-2 focus:ring-red-600 focus:outline-none transition rounded-md"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="telefone"
-                        placeholder="Telefone"
-                        value={form.telefone}
-                        onChange={handleChange}
-                        className="w-full p-3 mb-4 rounded bg-gray-800 placeholder-gray-400 text-white focus:ring-2 focus:ring-red-600 focus:outline-none transition rounded-md"
+                        className="
+                    w-full
+                    p-4
+                    rounded-2xl
+                    bg-black/30
+                    border
+                    border-white/10
+                    text-white
+                    placeholder:text-gray-500
+                    outline-none
+                    transition
+                    focus:border-red-500
+                    focus:ring-2
+                    focus:ring-red-500/20
+                "
                         required
                     />
                 </div>
 
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full p-3 mb-4 rounded bg-gray-800 placeholder-gray-400 text-white focus:ring-2 focus:ring-red-600 focus:outline-none transition rounded-md"
-                    required
-                />
+                {/* CPF + TELEFONE */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label className="block text-sm text-gray-300 mb-1">
+                            CPF
+                        </label>
 
-                <div className="relative mb-6">
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        placeholder="Senha"
-                        value={form.password}
-                        onChange={handleChange}
-                        className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 placeholder-gray-400 text-white focus:border-red-600 focus:ring-2 focus:ring-red-600 focus:outline-none transition"
-                        required
-                    />
-                    <button
-                        type="button"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer transition"
-                        onClick={() => setShowPassword(!showPassword)}
-                    >
-                        {showPassword ? "🙈" : "👁️"}
-                    </button>
+                        <input
+                            type="text"
+                            name="cpf"
+                            placeholder="000.000.000-00"
+                            value={form.cpf}
+                            onChange={handleChange}
+                            className="
+                        w-full
+                        p-4
+                        rounded-2xl
+                        bg-black/30
+                        border
+                        border-white/10
+                        text-white
+                        placeholder:text-gray-500
+                        outline-none
+                        transition
+                        focus:border-red-500
+                        focus:ring-2
+                        focus:ring-red-500/20
+                    "
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm text-gray-300 mb-1">
+                            Telefone
+                        </label>
+
+                        <input
+                            type="text"
+                            name="telefone"
+                            placeholder="(11) 99999-9999"
+                            value={form.telefone}
+                            onChange={handleChange}
+                            className="
+                        w-full
+                        p-4
+                        rounded-2xl
+                        bg-black/30
+                        border
+                        border-white/10
+                        text-white
+                        placeholder:text-gray-500
+                        outline-none
+                        transition
+                        focus:border-red-500
+                        focus:ring-2
+                        focus:ring-red-500/20
+                    "
+                            required
+                        />
+                    </div>
                 </div>
 
+                {/* EMAIL */}
+                <div className="mb-5">
+                    <label className="block text-sm text-gray-300 mb-1">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Digite seu email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="
+                    w-full
+                    p-4
+                    rounded-2xl
+                    bg-black/30
+                    border
+                    border-white/10
+                    text-white
+                    placeholder:text-gray-500
+                    outline-none
+                    transition
+                    focus:border-red-500
+                    focus:ring-2
+                    focus:ring-red-500/20
+                "
+                        required
+                    />
+                </div>
+
+                {/* SENHA */}
+                <div className="mb-7">
+                    <label className="block text-sm text-gray-300 mb-1">
+                        Senha
+                    </label>
+
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Digite sua senha"
+                            value={form.password}
+                            onChange={handleChange}
+                            className="
+                        w-full
+                        p-4
+                        rounded-2xl
+                        bg-black/30
+                        border
+                        border-white/10
+                        text-white
+                        placeholder:text-gray-500
+                        outline-none
+                        transition
+                        focus:border-red-500
+                        focus:ring-2
+                        focus:ring-red-500/20
+                    "
+                            required
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="
+                        absolute
+                        right-4
+                        top-1/2
+                        -translate-y-1/2
+                        text-gray-400
+                        hover:text-white
+                        transition
+                        cursor-pointer
+                    "
+                        >
+                            {showPassword ? "🙈" : "👁️"}
+                        </button>
+                    </div>
+                </div>
+
+                {/* BUTTON */}
                 <button
                     type="submit"
-                    className="w-full py-3 mb-2 rounded font-bold text-black bg-orange-500 hover:bg-orange-600 transition-colors duration-200 cursor-pointer rounded-md"
+                    className="
+                w-full
+                bg-gradient-to-r
+                from-orange-500
+                to-red-600
+                hover:from-orange-600
+                hover:to-red-700
+                transition-all
+                duration-200
+                p-4
+                rounded-2xl
+                font-bold
+                text-white
+                shadow-lg
+                shadow-red-900/40
+                hover:scale-[1.01]
+                active:scale-[0.99]
+                cursor-pointer
+            "
                 >
                     Cadastrar
                 </button>
 
+                {/* MESSAGE */}
                 {message && (
-                    <p className="mt-4 text-center text-red-500 font-medium">{message}</p>
+                    <p className="mt-5 text-center text-red-400 font-medium">
+                        {message}
+                    </p>
                 )}
 
-                <p className="mt-4 text-center text-gray-300 text-sm">
-                    Já tem um cadastro?{" "}
+                {/* FOOTER */}
+                <p className="mt-6 text-center text-gray-400 text-sm">
+                    Já tem uma conta?{" "}
                     <a
                         href="/login"
-                        className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
+                        className="
+                    text-orange-400
+                    hover:text-orange-300
+                    font-semibold
+                    transition-colors
+                "
                     >
-                        Então faça login
+                        Faça login
                     </a>
                 </p>
             </form>
