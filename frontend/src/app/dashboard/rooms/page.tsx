@@ -29,6 +29,8 @@ export default function RoomsPage() {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState<RoomCreatePayload>(INITIAL_FORM);
     const [submitting, setSubmitting] = useState(false);
+    const [editingRoom, setEditingRoom] = useState<any | null>(null);
+    const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,152 +40,295 @@ export default function RoomsPage() {
             setShowForm(false);
             setForm(INITIAL_FORM);
             refresh();
+            closeModal();
         } catch {
         } finally {
             setSubmitting(false);
         }
     };
 
+    const openRoomModal = (room: any) => {
+        setSelectedRoom(room);
+
+        setForm({
+            number: room.number,
+            type: room.type,
+            capacity: room.capacity,
+            price_per_night: room.price_per_night,
+            floor: room.floor,
+        });
+
+        setShowForm(true);
+    };
+    const closeModal = () => {
+        setShowForm(false);
+        setEditingRoom(null);
+        setForm(INITIAL_FORM);
+    };
+
     return (
-        <div className="min-h-screen bg-zinc-950 text-white p-8">
-            <BackButton href="/dashboard" label="Voltar para o Dashboard" />
+        <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-red-950 text-white px-6 py-10">
+            {/* Background glow */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/10 blur-3xl rounded-full" />
 
-            <div className="flex justify-between items-center mb-2">
-                <h1 className="text-3xl font-bold">Quartos</h1>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-semibold"
-                >
-                    {showForm ? "Cancelar" : "+ Novo Quarto"}
-                </button>
-            </div>
-            <p className="text-zinc-400 mb-6">
-                Visualize, cadastre e gerencie os quartos do hotel.
-            </p>
+            <div className="relative max-w-7xl mx-auto">
+                <BackButton href="/dashboard" label="Voltar para o Dashboard" />
 
-            {showForm && (
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-zinc-900 p-6 rounded-lg mb-6 border border-zinc-800"
-                >
-                    <h2 className="text-xl font-semibold mb-1">Cadastrar novo quarto</h2>
-                    <p className="text-sm text-zinc-400 mb-4">
-                        Preencha os campos abaixo. Os marcados com <span className="text-red-500">*</span> são obrigatórios.
-                    </p>
+                {/* HEADER */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6 mb-8">
+                    <div>
+                        <span className="text-red-500 uppercase tracking-widest text-sm font-semibold">
+                            Gestão de Quartos
+                        </span>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                            label="Número do quarto"
-                            htmlFor="number"
-                            hint="Ex: 101, 202A. Deve ser único no hotel."
-                            required
-                        >
-                            <input
-                                id="number"
-                                type="text"
-                                placeholder="101"
-                                value={form.number}
-                                onChange={(e) => setForm({ ...form, number: e.target.value })}
-                                className={inputClass}
-                                required
-                            />
-                        </FormField>
+                        <h1 className="text-5xl font-black mt-2">
+                            Quartos
+                        </h1>
 
-                        <FormField
-                            label="Tipo do quarto"
-                            htmlFor="type"
-                            hint="Categoria que define o padrão do quarto."
-                            required
-                        >
-                            <select
-                                id="type"
-                                value={form.type}
-                                onChange={(e) => setForm({ ...form, type: e.target.value as RoomType })}
-                                className={inputClass}
-                            >
-                                {ROOM_TYPES.map((t) => (
-                                    <option key={t.value} value={t.value}>{t.label}</option>
-                                ))}
-                            </select>
-                        </FormField>
-
-                        <FormField
-                            label="Andar"
-                            htmlFor="floor"
-                            hint="Número do andar onde o quarto está localizado (opcional)."
-                        >
-                            <input
-                                id="floor"
-                                type="number"
-                                placeholder="1"
-                                value={form.floor ?? ""}
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        floor: e.target.value ? Number(e.target.value) : undefined,
-                                    })
-                                }
-                                className={inputClass}
-                            />
-                        </FormField>
-
-                        <FormField
-                            label="Capacidade"
-                            htmlFor="capacity"
-                            hint="Quantas pessoas o quarto comporta."
-                        >
-                            <input
-                                id="capacity"
-                                type="number"
-                                min={1}
-                                placeholder="2"
-                                value={form.capacity}
-                                onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
-                                className={inputClass}
-                            />
-                        </FormField>
-
-                        <FormField
-                            label="Preço por noite (R$)"
-                            htmlFor="price"
-                            hint="Valor cobrado por diária. Aceita centavos (ex: 250.50)."
-                            required
-                            colSpan={2}
-                        >
-                            <input
-                                id="price"
-                                type="number"
-                                step="0.01"
-                                min={0}
-                                placeholder="250.00"
-                                value={form.price_per_night || ""}
-                                onChange={(e) => setForm({ ...form, price_per_night: Number(e.target.value) })}
-                                className={inputClass}
-                                required
-                            />
-                        </FormField>
+                        <p className="text-zinc-400 mt-3 text-lg">
+                            Visualize, cadastre e gerencie os quartos do hotel.
+                        </p>
                     </div>
 
                     <button
-                        type="submit"
-                        disabled={submitting}
-                        className="mt-6 w-full bg-green-600 hover:bg-green-700 disabled:bg-green-900 disabled:cursor-not-allowed p-3 rounded font-semibold"
+                        onClick={() => setShowForm(!showForm)}
+                        className="
+                    bg-gradient-to-r
+                    from-red-600
+                    to-orange-500
+                    hover:from-red-700
+                    hover:to-orange-600
+                    px-6
+                    py-3
+                    rounded-2xl
+                    font-semibold
+                    shadow-lg
+                    shadow-red-900/30
+                    transition-all
+                    duration-200
+                    hover:scale-[1.02]
+                    active:scale-[0.98]
+                "
                     >
-                        {submitting ? "Cadastrando..." : "Cadastrar Quarto"}
+                        {showForm ? "Cancelar" : "+ Novo Quarto"}
                     </button>
-                </form>
-            )}
+                </div>
 
-            {loading && <p className="text-zinc-400">Carregando quartos...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-            {!loading && rooms.length === 0 && !error && (
-                <p className="text-zinc-500">Nenhum quarto cadastrado ainda. Clique em "+ Novo Quarto" para começar.</p>
-            )}
+                {/* FORM */}
+                {showForm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/* BACKDROP */}
+                        <div
+                            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                            onClick={() => setShowForm(false)}
+                        />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {rooms.map((room) => (
-                    <RoomCard key={room.id} room={room} />
-                ))}
+                        {/* MODAL */}
+                        <div className="relative w-full max-w-2xl mx-4">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="
+                    bg-zinc-950/80
+                    border
+                    border-white/10
+                    rounded-3xl
+                    p-8
+                    shadow-2xl
+                    animate-in fade-in zoom-in-95 duration-200
+                "
+                            >
+                                {/* HEADER MODAL */}
+                                <div className="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h2 className="text-2xl font-bold">
+                                            {editingRoom ? "Editar quarto" : "Cadastrar novo quarto"}
+                                        </h2>
+                                        <p className="text-zinc-400 text-sm mt-1">
+                                            Preencha os dados do quarto
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowForm(false)}
+                                        className="
+                            text-zinc-400
+                            hover:text-white
+                            transition
+                            text-xl
+                        "
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                {/* FORM */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <FormField
+                                        label="Número do quarto"
+                                        htmlFor="number"
+                                        required
+                                    >
+                                        <input
+                                            id="number"
+                                            type="text"
+                                            value={form.number}
+                                            onChange={(e) =>
+                                                setForm({ ...form, number: e.target.value })
+                                            }
+                                            className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none"
+                                        />
+                                    </FormField>
+
+                                    <FormField
+                                        label="Tipo do quarto"
+                                        htmlFor="type"
+                                        required
+                                    >
+                                        <select
+                                            id="type"
+                                            value={form.type}
+                                            onChange={(e) =>
+                                                setForm({
+                                                    ...form,
+                                                    type: e.target.value as RoomType,
+                                                })
+                                            }
+                                            className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-white"
+                                        >
+                                            {ROOM_TYPES.map((t) => (
+                                                <option key={t.value} value={t.value}>
+                                                    {t.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </FormField>
+
+                                    <FormField label="Andar" htmlFor="floor">
+                                        <input
+                                            id="floor"
+                                            type="number"
+                                            value={form.floor ?? ""}
+                                            onChange={(e) =>
+                                                setForm({
+                                                    ...form,
+                                                    floor: e.target.value
+                                                        ? Number(e.target.value)
+                                                        : undefined,
+                                                })
+                                            }
+                                            className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-white"
+                                        />
+                                    </FormField>
+
+                                    <FormField label="Capacidade" htmlFor="capacity">
+                                        <input
+                                            id="capacity"
+                                            type="number"
+                                            min={1}
+                                            value={form.capacity}
+                                            onChange={(e) =>
+                                                setForm({
+                                                    ...form,
+                                                    capacity: Number(e.target.value),
+                                                })
+                                            }
+                                            className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-white"
+                                        />
+                                    </FormField>
+
+                                    <FormField
+                                        label="Preço por noite"
+                                        htmlFor="price"
+                                        required
+                                        colSpan={2}
+                                    >
+                                        <input
+                                            id="price"
+                                            type="number"
+                                            step="0.01"
+                                            value={form.price_per_night || ""}
+                                            onChange={(e) =>
+                                                setForm({
+                                                    ...form,
+                                                    price_per_night: Number(e.target.value),
+                                                })
+                                            }
+                                            className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-white"
+                                        />
+                                    </FormField>
+                                </div>
+
+                                {/* ACTIONS */}
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="
+                        mt-8
+                        w-full
+                        bg-gradient-to-r
+                        from-green-600
+                        to-emerald-500
+                        hover:from-green-700
+                        hover:to-emerald-600
+                        p-4
+                        rounded-2xl
+                        font-bold
+                        transition
+                        disabled:opacity-50
+                    "
+                                >
+                                    {selectedRoom ? "Editar quarto" : "Cadastrar quarto"}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* STATES */}
+                {loading && (
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-zinc-400">
+                        Carregando quartos...
+                    </div>
+                )}
+
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 text-red-400">
+                        {error}
+                    </div>
+                )}
+
+                {!loading && rooms.length === 0 && !error && (
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-10 text-center">
+                        <p className="text-zinc-400 text-lg">
+                            Nenhum quarto cadastrado ainda.
+                        </p>
+
+                        <p className="text-zinc-500 mt-2">
+                            Clique em "+ Novo Quarto" para começar.
+                        </p>
+                    </div>
+                )}
+
+                {/* ROOMS */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    {rooms.map((room) => (
+                        <div
+                            key={room.id}
+                            onClick={() => openRoomModal(room)}
+                            className="
+                                group
+                                relative
+                                cursor-pointer
+                                transition-all
+                                duration-300
+                                hover:-translate-y-1
+                            "
+                        >
+                            <RoomCard room={room} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
