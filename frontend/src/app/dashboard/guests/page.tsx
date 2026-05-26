@@ -44,31 +44,61 @@ export default function GuestsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-red-950 text-white px-6 py-10">
             <BackButton href="/dashboard" label="Voltar para o Dashboard" />
 
-            <div className="flex justify-between items-center mb-2">
-                <h1 className="text-3xl font-bold">Hóspedes</h1>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mt-6 mb-8">
+                <div>
+                    <span className="text-red-500 uppercase tracking-widest text-sm font-semibold">
+                        Gestão de Hóspedes
+                    </span>
+
+                    <h1 className="text-5xl font-black mt-2">
+                        Hóspedes
+                    </h1>
+
+                    <p className="text-zinc-400 mt-3 text-lg">
+                        Cadastre e consulte os hóspedes do hotel.
+                    </p>
+                </div>
+
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-semibold"
+                    className="
+                    bg-gradient-to-r
+                    from-red-600
+                    to-orange-500
+                    hover:from-red-700
+                    hover:to-orange-600
+                    px-6
+                    py-3
+                    rounded-2xl
+                    font-semibold
+                    shadow-lg
+                    shadow-red-900/30
+                    transition
+                    hover:scale-[1.02]
+                    active:scale-[0.98]
+                "
                 >
                     {showForm ? "Cancelar" : "+ Novo Hóspede"}
                 </button>
             </div>
-            <p className="text-zinc-400 mb-6">
-                Cadastre e consulte os hóspedes do hotel.
-            </p>
 
             {showForm && (
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-zinc-900 p-6 rounded-lg mb-6 border border-zinc-800"
+                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 mb-10 shadow-2xl"
                 >
-                    <h2 className="text-xl font-semibold mb-1">Cadastrar novo hóspede</h2>
-                    <p className="text-sm text-zinc-400 mb-4">
-                        Preencha os dados do hóspede. Os marcados com <span className="text-red-500">*</span> são obrigatórios.
-                    </p>
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold mb-2">
+                            Cadastrar novo hóspede
+                        </h2>
+
+                        <p className="text-zinc-400">
+                            Preencha os dados do hóspede corretamente
+                        </p>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
