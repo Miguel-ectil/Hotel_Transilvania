@@ -93,18 +93,30 @@ export default function ReservationsPage() {
             )}
 
             {showForm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl">
+                        <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 p-6 flex items-center justify-between">
+                            <div>
+                                <h2 className="text-2xl font-bold">
+                                    Nova Reserva
+                                </h2>
+                                <p className="text-zinc-400 text-sm">
+                                    Selecione o quarto, hóspede e período da estadia.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowForm(false)}
+                                className="text-zinc-400 hover:text-white text-2xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 mb-10 shadow-2xl"
+                    className="p-6"
                 >
-                    <div className="mb-8">
-                        <h2 className="text-2xl font-bold mb-2">
-                            Nova reserva
-                        </h2>
-                        <p className="text-zinc-400">
-                            Selecione o quarto, hóspede e período de estadia.
-                        </p>
-                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
@@ -240,7 +252,9 @@ export default function ReservationsPage() {
                     >
                         {submitting ? "Criando reserva..." : "Criar Reserva"}
                     </button>
-                </form>
+                        </form>
+                    </div>
+                    </div>
             )}
 
             {loading && <p className="text-zinc-400">Carregando reservas...</p>}
